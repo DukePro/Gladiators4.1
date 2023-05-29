@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Gladiators
 {
@@ -29,10 +30,10 @@ namespace Gladiators
         private Gladiator[] _gladiators = new Gladiator[]
             {
                 new Fighter(),
-                //new Rouge(),
-                //new Knight(),
-                //new Cleric(),
-                //new Doppelganger(),
+                new Rouge(),
+                new Knight(),
+                new Cleric(),
+                new Doppelganger(),
             };
 
         public void ShowMainMenu()
@@ -77,10 +78,10 @@ namespace Gladiators
             {
                 Console.WriteLine("\nВыберете гладиатора:");
                 Console.WriteLine(MenuGladiator1 + $" - {_gladiators[0].СharClass}");
-                //Console.WriteLine(MenuGladiator2 + " - " + _rouge.Name);
-                //Console.WriteLine(MenuGladiator3 + " - " + _knight.Name);
-                //Console.WriteLine(MenuGladiator4 + " - " + _cleric.Name);
-                //Console.WriteLine(MenuGladiator5 + " - " + _doppelganger.Name);
+                Console.WriteLine(MenuGladiator2 + $" - {_gladiators[1].СharClass}");
+                Console.WriteLine(MenuGladiator3 + $" - {_gladiators[2].СharClass}");
+                Console.WriteLine(MenuGladiator4 + $" - {_gladiators[3].СharClass}");
+                Console.WriteLine(MenuGladiator5 + $" - {_gladiators[4].СharClass}");
                 Console.WriteLine(MenuShowAllDescription + " - Показать описание гладиаторов");
                 Console.WriteLine(MenuBack + " - Назад");
 
@@ -93,22 +94,18 @@ namespace Gladiators
                         break;
 
                     case MenuGladiator2:
-                        //Console.WriteLine("Выбран " + _rouge.Name);
-                        //AddGladiatorToArena(new Rouge());
+                        _arena.AddGladiatorToArena(new Rouge());
                         break;
 
                     case MenuGladiator3:
-                        //Console.WriteLine("Выбран " + _knight.Name);
-                        //AddGladiatorToArena(new Knight());
+                        _arena.AddGladiatorToArena(new Knight());
                         break;
 
                     case MenuGladiator4:
-                        //Console.WriteLine("Выбран " + _cleric.Name);
-                        //AddGladiatorToArena(new Cleric());
+                        _arena.AddGladiatorToArena(new Cleric());
                         break;
                     case MenuGladiator5:
-                        //Console.WriteLine("Выбран " + _doppelganger.Name);
-                        //AddGladiatorToArena(new Doppelganger());
+                        _arena.AddGladiatorToArena(new Doppelganger());
                         break;
                     case MenuShowAllDescription:
                         ShowAllGladiators();
@@ -134,16 +131,20 @@ namespace Gladiators
             Console.Write($"{_gladiators[0].СharClass} - "); _gladiators[0].ShowDescription();
             _gladiators[0].ShowShortСharacteristics();
             Console.WriteLine("-------------------------------------------------------------------------------------------------------");
-            //_rouge.ShowStats();
-            //Console.WriteLine("Вор - боец с небольшим базовым уроном, но возможностью нанести критический удар или полностью уклониться от атаки.");
-            //_knight.ShowStats();
-            //Console.WriteLine("Рыцарь. Весь в броне и со щитом, которым может воспользоваться в любой момент и увеличить свою броню.");
-            //_cleric.ShowStats();
-            //Console.WriteLine("Боевой храмовник. Может вылечить себя после удара.");
-            //_doppelganger.ShowStats();
-            //Console.WriteLine("Странная раздвоенная сущность. Может, как нанести двойной урон, так и разделить полученный между сущностями.");
+            Console.Write($"{_gladiators[1].СharClass} - "); _gladiators[1].ShowDescription();
+            _gladiators[1].ShowShortСharacteristics();
+            Console.WriteLine("-------------------------------------------------------------------------------------------------------");
+            Console.Write($"{_gladiators[2].СharClass} - "); _gladiators[2].ShowDescription();
+            _gladiators[2].ShowShortСharacteristics();
+            Console.WriteLine("-------------------------------------------------------------------------------------------------------");
+            Console.Write($"{_gladiators[3].СharClass} - "); _gladiators[3].ShowDescription();
+            _gladiators[3].ShowShortСharacteristics();
+            Console.WriteLine("-------------------------------------------------------------------------------------------------------");
+            Console.Write($"{_gladiators[4].СharClass} - "); _gladiators[4].ShowDescription();
+            _gladiators[4].ShowShortСharacteristics();
+            Console.WriteLine("-------------------------------------------------------------------------------------------------------");
+            
         }
-
     }
 
     class Arena
@@ -188,26 +189,36 @@ namespace Gladiators
 
                 while (gladiator1.Health > 0 && gladiator2.Health > 0)
                 {
-                    gladiator2.TakeDamage(gladiator1.DealDamage());
                     gladiator1.ShowStatus();
-                    Console.WriteLine("-------------------------------------------------------------------------------------------------------");
-                    gladiator1.TakeDamage(gladiator2.DealDamage());
+                    Console.Write(" | ");
                     gladiator2.ShowStatus();
-                    Console.WriteLine("-------------------------------------------------------------------------------------------------------");
+                    Console.WriteLine();
+
+                    gladiator2.TakeDamage(gladiator1.DealDamage());
+                    gladiator1.TakeDamage(gladiator2.DealDamage());
+                    Console.WriteLine("\n---------------------------------------------------------------------------------------");
                 }
 
                 if (gladiator1.Health > 0 && gladiator2.Health < 0)
                 {
                     Console.WriteLine($"Победил {gladiator1.СharClass} {gladiator1.Name}! {gladiator2.СharClass} {gladiator2.Name} - повержен!");
                 }
+                else if (gladiator2.Health > 0 && gladiator1.Health < 0)
+                {
+                    Console.WriteLine($"Победил {gladiator2.СharClass} {gladiator2.Name}! {gladiator1.СharClass} {gladiator1.Name} - повержен!");
+                }
+                else
+                {
+                    Console.WriteLine("Нет победителя, оба погибли.");
+                }
+
+                _fightingPair.Clear();
             }
             else
             {
                 Console.WriteLine("Для боя нужно 2 гладиатора");
             }
         }
-
-
     }
 
     class Names
@@ -268,7 +279,7 @@ namespace Gladiators
         {
             Name = _names.GetName();
             Health = 1000;
-            _maxHealth = 1200;
+            _maxHealth = 1000;
             _armor = 30;
             _maxArmor = 60;
             _hitDamage = 100;
@@ -284,16 +295,30 @@ namespace Gladiators
 
         public virtual int DealDamage()
         {
+            int alternateDamage = UseAttackAbility();
+
             double minDamageMod = 0.8;
             double maxDamageMod = 1.2;
             double damageMod = minDamageMod + (_random.NextDouble() * (maxDamageMod - minDamageMod));
-            int damage = (int)(_hitDamage * damageMod);
 
-            return damage;
+            if (alternateDamage != 0)
+            {
+                int damage = alternateDamage;
+                Console.Write($"{СharClass} {Name} Пытается нанести {damage} урона | ");
+                return damage;
+            }
+            else
+            {
+                int damage = (int)(_hitDamage * damageMod);
+                Console.Write($"{СharClass} {Name} Пытается нанести {damage} урона | ");
+                return damage;
+            }
         }
 
         public virtual void TakeDamage(int damage)
         {
+            UseDefenceAbility(); // не настроено
+
             int reducedDamage = damage - _armor;
 
             if (reducedDamage < _baseDamage)
@@ -304,11 +329,22 @@ namespace Gladiators
             {
                 Health -= reducedDamage;
             }
+
+            Console.WriteLine($"{СharClass} {Name} получает {reducedDamage} урона");
+        }
+
+        protected virtual void UseDefenceAbility() //пока не настроено
+        {
+        }
+        
+        protected virtual int UseAttackAbility()
+        {
+            return 0;
         }
 
         public void ShowStatus()
         {
-            Console.WriteLine($"{СharClass} {Name} - Здоровье: {Health}, Броня: {_armor}");
+            Console.Write($"{СharClass} {Name} - Здоровье: {Health}, Броня: {_armor}");
         }
 
         public void ShowDescription()
@@ -338,32 +374,94 @@ namespace Gladiators
             _hitDamage = _random.Next(90, 130);
             _armor = 20;
             //_maxArmor = 40;
-            Initiative = 3;
+            Initiative = 5;
         }
 
         public override int DealDamage()
         {
+            Console.Write($"{СharClass} {Name} Пытается нанести {_hitDamage} урона | ");
             return _hitDamage;
         }
     }
 
-    //class Rouge : Gladiator
-    //{
+    class Rouge : Gladiator
+    {
+        public Rouge()
+        {
+            СharClass = "Rouge";
+            Description = "Вор - боец с небольшим базовым уроном, но возможностью нанести критический удар или полностью уклониться от атаки.";
+            //_health = 1000;
+            //_maxHealth = 1500;
+            _hitDamage = 70;
+            _armor = 5;
+            //_maxArmor = 40;
+            Initiative = 10;
+        }
 
-    //}
+        protected override int UseAttackAbility()
+        {
+            return CriticalHit();
+        }
 
-    //class Knight : Gladiator
-    //{
+        private int CriticalHit()
+        {
+            Random random = new Random();
+            double critMultiplier = 3;
+            int critChance = 25;
+            int baseDamage = _hitDamage;
 
-    //}
+            if (random.Next(0, 100) < critChance)
+            {
+                baseDamage = Convert.ToInt32(Math.Round(baseDamage * critMultiplier));
+                Console.WriteLine($"{Name} наносит критический удар!");
+            }
 
-    //class Cleric : Gladiator
-    //{
+            return baseDamage;
+        }
+    }
 
-    //}
+    class Knight : Gladiator
+    {
+        public Knight()
+        {
+            СharClass = "Knight";
+            Description = "Рыцарь. Весь в броне и со щитом, которым может воспользоваться в любой момент и увеличить свою броню.";
+            //_health = 1000;
+            //_maxHealth = 1500;
+            //_hitDamage = 100;
+            _armor = 30;
+            _maxArmor = 80;
+            Initiative = 1;
+        }
+    }
 
-    //class Doppelganger : Gladiator
-    //{
+    class Cleric : Gladiator
+    {
+        public Cleric()
+        {
+            СharClass = "Cleric";
+            Description = "Боевой храмовник. Может вылечить себя после удара.";
+            //_health = 1000;
+            _maxHealth = 1300;
+            //_hitDamage = 100;
+            _armor = 30;
+            //_maxArmor = 40;
+            Initiative = 3;
+        }
+    }
 
-    //}
+    class Doppelganger : Gladiator
+    {
+        public Doppelganger()
+        {
+            СharClass = "Doppelganger";
+            Description = "Странная раздвоенная сущность. Может, как нанести двойной урон, так и разделить полученный между сущностями.";
+            //_health = 1000;
+            //_maxHealth = 1500;
+            _hitDamage = 60;
+            _armor = 15;
+            //_maxArmor = 40;
+            Initiative = 7;
+        }
+    }
 }
