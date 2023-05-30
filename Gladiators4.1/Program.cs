@@ -72,7 +72,7 @@ namespace Gladiators
             bool isBack = false;
             string userInput;
 
-            
+
 
             while (isBack == false)
             {
@@ -143,7 +143,7 @@ namespace Gladiators
             Console.Write($"{_gladiators[4].СharClass} - "); _gladiators[4].ShowDescription();
             _gladiators[4].ShowShortСharacteristics();
             Console.WriteLine("-------------------------------------------------------------------------------------------------------");
-            
+
         }
     }
 
@@ -317,8 +317,6 @@ namespace Gladiators
 
         public virtual void TakeDamage(int damage)
         {
-            UseDefenceAbility(); // не настроено
-
             int reducedDamage = damage - _armor;
 
             if (reducedDamage < _baseDamage)
@@ -336,7 +334,7 @@ namespace Gladiators
         protected virtual void UseDefenceAbility() //пока не настроено
         {
         }
-        
+
         protected virtual int UseAttackAbility()
         {
             return 0;
@@ -417,6 +415,48 @@ namespace Gladiators
             }
 
             return baseDamage;
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            bool isDoged = IsDoge();
+            int reducedDamage = damage - _armor;
+
+            if (isDoged)
+            {
+                Console.WriteLine($"{СharClass} {Name} Уклонился от атаки!");
+            }
+            else
+            {
+                if (reducedDamage < _baseDamage)
+                {
+                    reducedDamage = _baseDamage;
+                }
+                else
+                {
+                    Health -= reducedDamage;
+                }
+
+                Console.WriteLine($"{СharClass} {Name} получает {reducedDamage} урона");
+            }
+        }
+
+        private bool IsDoge()
+        {
+            Random random = new Random();
+            int dogeChance = 20;
+            bool isDoged = false;
+
+            if (random.Next(0, 100) < dogeChance)
+            {
+                isDoged = true;
+            }
+            else
+            {
+                isDoged = false;
+            }
+
+            return isDoged;
         }
     }
 
